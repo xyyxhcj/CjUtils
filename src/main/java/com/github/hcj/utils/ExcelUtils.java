@@ -39,6 +39,8 @@ public class ExcelUtils {
 
     /**
      * 生成.xlsx文件数据
+     * @param xlsxSource xlsxSource
+     * @return return
      */
     private static XSSFWorkbook getXssfSheets(XlsxSource xlsxSource) {
         Map map = new HashMap(xlsxSource.keys.length);
@@ -80,6 +82,8 @@ public class ExcelUtils {
 
     /**
      * 指定输出流参数
+     * @param xlsxSource xlsxSource
+     * @throws IOException IOException
      */
     private static void setHttpServletResponse(XlsxSource xlsxSource) throws IOException {
         String agent = xlsxSource.request.getHeader("user-agent");
@@ -89,6 +93,8 @@ public class ExcelUtils {
 
     /**
      * 导出xlsx
+     * @param xlsxSource xlsxSource
+     * @throws IOException IOException
      */
     public static void export(XlsxSource xlsxSource) throws IOException {
         XSSFWorkbook xssfWorkbook = getXssfSheets(xlsxSource);
@@ -101,7 +107,9 @@ public class ExcelUtils {
     }
 
     /**
-     * 将Xlsx转为List<Map>
+     * 将Xlsx转为List
+     * @param multipartFile multipartFile
+     * @return return
      */
     public static List<Map> getListFromExcel(MultipartFile multipartFile) {
         List<Map> records = null;
@@ -130,6 +138,12 @@ public class ExcelUtils {
         return records;
     }
 
+    /**
+     *
+     * @param sheet sheet
+     * @param row row
+     * @return return
+     */
     private static List<Map> getListFromSheet(Sheet sheet, Row row) {
         List<Map> list = new ArrayList<>();
         //将首行数据存入数组(对应实体类属性名)
@@ -182,10 +196,11 @@ public class ExcelUtils {
 
         /**
          * 封装导出Excel所需参数
-         *
-         * @param sources  数据源
-         * @param keys     实体类字段
-         * @param keysCn   实体类中文字段
+         * @param sources 数据源
+         * @param keys 实体类字段
+         * @param keysCn 实体类中文字段
+         * @param request request
+         * @param response response
          * @param fileName 输出文件名(包含后缀)
          * @param sheetName Excel工作表名
          */

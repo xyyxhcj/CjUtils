@@ -11,7 +11,7 @@ import java.net.URLConnection;
 /**
  * 发送短信的工具类,该平台需要先添加ip白名单
  * @author xyyxhcj@qq.com
- * @date 2018/1/5
+ * @since 2018/1/5
  */
 public class UcpaasUtils {
     private static String url = "https://open.ucpaas.com/ol/sms/sendsms";
@@ -25,7 +25,14 @@ public class UcpaasUtils {
         String mobile;
         String uid; //回传识别数据
 
-        public Sms(String mobile, String param, String uid,String templateId) {
+        /**
+         *
+         * @param mobile mobile
+         * @param param param
+         * @param uid uid
+         * @param templateId templateId
+         */
+        Sms(String mobile, String param, String uid, String templateId) {
             this.param = param;
             this.mobile = mobile;
             this.uid = uid;
@@ -61,6 +68,13 @@ public class UcpaasUtils {
         }
     }
 
+    /**
+     *
+     * @param mobile mobile
+     * @param param param
+     * @param templateId templateId
+     * @return return
+     */
     public static String sendSms(String mobile, String param,String templateId) {
         Sms sms = new Sms(mobile, param, mobile,templateId);
         //使用JacksonJson

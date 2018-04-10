@@ -8,18 +8,19 @@ import java.io.IOException;
 import java.net.URLEncoder;
 
 
+/**
+ * @author CJ
+ */
 @SuppressWarnings("restriction")
 public class FileUtils {
     
     /**
      * 下载文件时，针对不同浏览器，进行附件名的编码
      * 
-     * @param filename
-     *            下载文件名
-     * @param agent
-     *            客户端浏览器
+     * @param filename 下载文件名
+     * @param agent 客户端浏览器
      * @return 编码后的下载附件名
-     * @throws IOException
+     * @throws IOException IOException
      */
     public static String encodeDownloadFilename(String filename, String agent)
                 throws IOException {

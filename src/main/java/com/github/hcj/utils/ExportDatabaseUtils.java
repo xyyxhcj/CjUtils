@@ -8,20 +8,19 @@ import java.util.Date;
 /**
  * Mysql数据库备份
  * @author xyyxhcj@qq.com
- * @date 2018/2/26
+ * @since 2018/2/26
  */
 public class ExportDatabaseUtils {
     /**
      * Java代码实现MySQL数据库导出
-     *
-     * @author GaoHuanjie
      * @param hostIP MySQL数据库所在服务器地址IP
+     * @param hostPost 数据库连接端口
      * @param userName 进入数据库所需要的用户名
      * @param password 进入数据库所需要的密码
      * @param savePath 数据库导出文件保存路径
      * @param fileName 数据库导出文件文件名
      * @param databaseName 要导出的数据库名
-     * @return 返回true表示导出成功，否则返回false。
+     * @return 返回true表示导出成功，否则返回false
      */
     public static boolean exportDatabaseTool(String hostIP,int hostPost, String userName, String password, String savePath, String fileName, String databaseName) {
         File saveFile = new File(savePath);
@@ -57,10 +56,9 @@ public class ExportDatabaseUtils {
 
     /**
      * 使用配置文件中的对应配置备份数据库
-     * @return
-     * @throws InterruptedException
+     * @return return
      */
-    public static boolean defaultExport() throws InterruptedException {
+    public static boolean defaultExport(){
         boolean flag = exportDatabaseTool("172.16.0.127",3306, "root", "123456", "D:/backupDatabase", "2014-10-14.sql", "test");
         if (flag) {
             System.out.println("数据库备份成功！！！");

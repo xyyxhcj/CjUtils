@@ -5,7 +5,7 @@ import java.util.UUID;
 /**
  * 随机数工具类
  * @author xyyxhcj@qq.com
- * @date 2018/3/30
+ * @since 2018/3/30
  */
 public class RandomUtils {
     public RandomUtils() {
@@ -13,7 +13,7 @@ public class RandomUtils {
 
     /**
      * 获取随机字符串并去除"-"
-     * @return
+     * @return return
      */
     public static String getText() {
         String r = UUID.randomUUID().toString().replace("-", "");
@@ -22,8 +22,8 @@ public class RandomUtils {
 
     /**
      * 在原字符串前拼接随机字符串
-     * @param fileName
-     * @return
+     * @param fileName fileName
+     * @return return
      */
     public static String getUUIDFileName(String fileName) {
         return getText() + "_" + fileName;
@@ -31,8 +31,8 @@ public class RandomUtils {
 
     /**
      * 获取两层目录
-     * @param uuidFileName
-     * @return
+     * @param uuidFileName uuidFileName
+     * @return return
      */
     public static String getPath(String uuidFileName) {
         StringBuilder sb = new StringBuilder();

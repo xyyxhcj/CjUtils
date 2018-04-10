@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Jackson工具类
  * @author xyyxhcj@qq.com
- * @date 2018/2/6
+ * @since 2018/2/6
  */
 public class JsonUtils {
     //定义处理JSON数据的jackson对象
@@ -20,6 +20,8 @@ public class JsonUtils {
 
     /**
      * 将对象转换成json字符串,可用于Map To Json
+     * @param data data
+     * @return return
      */
     public static String objectToJson(Object data) {
         String jsonString=null;
@@ -32,11 +34,11 @@ public class JsonUtils {
     }
 
     /**
-     * 将json格式字符串转换成对象,可用于Json To Map<String,Map>
-     * @param jsonData
-     * @param beanType
-     * @param <T>
-     * @return
+     * 将json格式字符串转换成对象,可用于Json To Map(泛型为'String,Map')
+     * @param jsonData jsonData
+     * @param beanType beanType
+     * @param <T> T
+     * @return return
      */
     public static <T> T jsonToPojo(String jsonData, Class<T> beanType) {
         T t=null;
@@ -50,10 +52,10 @@ public class JsonUtils {
 
     /**
      * 将json数据转换成pojo对象list
-     * @param jsonData
-     * @param beanType
-     * @param <T>
-     * @return
+     * @param jsonData jsonData
+     * @param beanType beanType
+     * @param <T> T
+     * @return return
      */
     public static <T>List<T> jsonToList(String jsonData, Class<T> beanType) {
         JavaType javaType = MAPPER.getTypeFactory().constructParametricType(List.class, beanType);
@@ -73,8 +75,11 @@ public class JsonUtils {
     }
 
     /**
-     * 将json格式字符串转换成对象,可用于Json To Map<String,Bean>
-     * @param typeReference 可传入new TypeReference<LinkedHashMap<String, Bean>>() {}
+     * 将json格式字符串转换成对象,可用于Json To Map(泛型为'String,Bean')
+     * @param jsonData jsonData
+     * @param typeReference 可传入new TypeReference[LinkedHashMap[String, Bean]]() {}
+     * @param <T> T
+     * @return return
      */
     public static<T> T jsonToMapPojo(String jsonData, TypeReference<T> typeReference) {
         T t=null;

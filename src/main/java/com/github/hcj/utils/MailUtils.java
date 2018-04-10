@@ -19,6 +19,12 @@ public class MailUtils {
     private static String password = "as123456"; // 邮箱授权码
     private static String from = "18817237197@163.com"; // 使用当前账户
 
+    /**
+     *
+     * @param subject subject
+     * @param content content
+     * @param to to
+     */
     public static void sendMail(String subject, String content, String to) {
         Properties props = new Properties();
         props.setProperty("mail.smtp.host", smtp_host);

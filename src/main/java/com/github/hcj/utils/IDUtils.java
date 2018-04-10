@@ -7,12 +7,12 @@ import java.util.UUID;
 /**
  * 主键生成工具类(使用13位毫秒值进行拼接)
  * @author xyyxhcj@qq.com
- * @date 2018/2/6
+ * @since 2018/2/6
  */
 public class IDUtils {
     /**
      * 16位ID生成,毫秒值+随机整数(整型字符串)
-     * @return
+     * @return return
      */
     public static String getId16() {
         long millis = System.currentTimeMillis();
@@ -22,7 +22,7 @@ public class IDUtils {
     }
     /**
      * 18位ID生成,纳秒值+随机整数(整型字符串)
-     * @return
+     * @return return
      */
     public static String getId18() {
         long millis = System.nanoTime();
@@ -33,7 +33,7 @@ public class IDUtils {
 
     /**
      * 20位字符串ID生成(毫秒值+UUID)
-     * @return
+     * @return return
      */
     public static String getIdStr20() {
         long millis=System.currentTimeMillis();
@@ -43,6 +43,7 @@ public class IDUtils {
 
     /**
      * 测试
+     * @param args args
      */
     public static void main(String[] args) {
         for (int i = 0; i < 10; i++) {
