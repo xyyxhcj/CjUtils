@@ -1,4 +1,4 @@
-package com.github.hcj.utils;
+package com.github.xyyxhcj.utils;
 
 
 import org.apache.commons.lang3.StringUtils;

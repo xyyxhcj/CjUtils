@@ -1,6 +1,4 @@
-package com.github.hcj.utils;
-
-import com.sun.org.apache.xpath.internal.operations.Equals;
+package com.github.xyyxhcj.utils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;

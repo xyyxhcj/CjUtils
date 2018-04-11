@@ -1,4 +1,4 @@
-package com.github.hcj.utils;
+package com.github.xyyxhcj.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
