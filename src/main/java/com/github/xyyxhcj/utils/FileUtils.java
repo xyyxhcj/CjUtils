@@ -24,7 +24,7 @@ public class FileUtils {
      */
     public static String encodeDownloadFilename(String filename, String agent)
                 throws IOException {
-        if (agent.contains("Firefox")) { // 火狐浏览器
+        if (agent.contains("Firefox")) {
             filename = "=?UTF-8?B?"
                         + new BASE64Encoder().encode(filename.getBytes("utf-8"))
                         + "?=";

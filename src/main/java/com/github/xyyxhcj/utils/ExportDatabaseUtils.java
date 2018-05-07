@@ -2,69 +2,66 @@ package com.github.xyyxhcj.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * Mysql数据库备份
+ *
  * @author xyyxhcj@qq.com
  * @since 2018/2/26
  */
 public class ExportDatabaseUtils {
     /**
      * Java代码实现MySQL数据库导出
-     * @param hostIP MySQL数据库所在服务器地址IP
-     * @param hostPost 数据库连接端口
-     * @param userName 进入数据库所需要的用户名
-     * @param password 进入数据库所需要的密码
-     * @param savePath 数据库导出文件保存路径
-     * @param fileName 数据库导出文件文件名
+     * @param hostIP IP
+     * @param hostPort 端口
+     * @param userName 用户名
+     * @param password 密码
+     * @param savePath 保存路径
+     * @param fileName 保存文件名
      * @param databaseName 要导出的数据库名
-     * @return 返回true表示导出成功，否则返回false
+     * @return 返回true表示导出成功，否则返回false。
      */
-    public static boolean exportDatabaseTool(String hostIP,int hostPost, String userName, String password, String savePath, String fileName, String databaseName) {
+    public static boolean exportDatabaseTool(String hostIP, int hostPort, String userName, String password, String savePath, String fileName, String databaseName) {
         File saveFile = new File(savePath);
-        if (!saveFile.exists()) {// 如果目录不存在
-            saveFile.mkdirs();// 创建文件夹
-        }
+        saveFile.mkdirs();
         if (!savePath.endsWith(File.separator)) {
             savePath = savePath + File.separator;
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-");
         String date = simpleDateFormat.format(new Date());
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("mysqldump").append(" --opt").append(" -h").append(hostIP).append(" -P").append(hostPost);
-        stringBuilder.append(" --user=").append(userName) .append(" --password=").append(password).append(" --lock-all-tables=true");
-        stringBuilder.append(" --result-file=").append(savePath +date+ fileName).append(" --default-character-set=utf8 ").append(databaseName);
-        System.out.println(stringBuilder);
+        StringBuilder stringBuilder = new StringBuilder("cmd /c mysqldump -h");
         try {
-            Process process = Runtime.getRuntime().exec(stringBuilder.toString());
-            if (process.waitFor() == 0) {// 0 表示线程正常终止。
+            String exeString = stringBuilder.append(hostIP).append(" -P").append(hostPort).append(" -u").append(userName).append(" -p").append(password).append(" --result-file=").append(savePath).append(date).append(fileName).append(" ").append(databaseName).toString();
+            Process process = Runtime.getRuntime().exec(exeString);
+            InputStream errorStream = process.getErrorStream();
+            byte[] bys = new byte[1024];
+            int len;
+            while ((len = errorStream.read(bys)) != -1) {
+                System.out.println(new String(bys, 0, len));
+            }
+            System.out.println(errorStream);
+            if (process.waitFor() == 0) {
                 return true;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
         return false;
     }
 
 
-
-
-
     /**
-     * 使用配置文件中的对应配置备份数据库
-     * @return return
+     * 测试:使用配置文件中的对应配置备份数据库
      */
-    public static boolean defaultExport(){
-        boolean flag = exportDatabaseTool("172.16.0.127",3306, "root", "123456", "D:/backupDatabase", "2014-10-14.sql", "test");
+    public static void main(String[] args) {
+        boolean flag = exportDatabaseTool("127.0.0.1", 3306, "root", "as123456", "D:/backupDatabase", "sqlBack.sql", "test");
         if (flag) {
             System.out.println("数据库备份成功！！！");
         } else {
             System.out.println("数据库备份失败！！！");
         }
-        return flag;
     }
 }

@@ -14,10 +14,22 @@ import java.util.Properties;
  * @author CJ
  */
 public class MailUtils {
-    private static String smtp_host = "smtp.163.com"; // 网易
-    private static String username = "18817237197@163.com"; // 邮箱账户
-    private static String password = "as123456"; // 邮箱授权码
-    private static String from = "18817237197@163.com"; // 使用当前账户
+    /**
+     * 邮箱地址
+     */
+    private static String smtp_host = "smtp.163.com";
+    /**
+     * 邮箱账户登录名
+     */
+    private static String username = "18817237197@163.com";
+    /**
+     * 邮箱授权码
+     */
+    private static String password = "******";
+    /**
+     * 当前邮箱
+     */
+    private static String from = "18817237197@163.com";
 
     /**
      *
@@ -46,7 +58,10 @@ public class MailUtils {
         }
     }
 
+    /**
+     * 测试
+     */
     public static void main(String[] args) {
-        sendMail("quilllingstory异常记录20180329", "quilllingstory异常记录:<br/>", "18817237197@qq.com");
+        sendMail("异常记录", "异常记录:<br/>", "xyyxhcj@qq.com");
     }
 }

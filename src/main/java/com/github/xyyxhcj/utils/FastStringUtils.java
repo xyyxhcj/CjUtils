@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class FastStringUtils {
     /**
-     * 效率较高的字符串切割方法
+     * 字符串切割
      * @param src 被切割字符串
      * @param replacement 分割符
      * @param <T> T

@@ -6,10 +6,15 @@
 
     <groupId>com.github.xyyxhcj</groupId>
     <artifactId>cj-utils</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <packaging>jar</packaging>
     <name>cj-utils</name>
     <url>https://github.com/xyyxhcj</url>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
     <licenses>
         <license>
             <name>Apache 2</name>
