@@ -21,7 +21,7 @@ public class ResponseUtils {
      * @param response response
      * @param fileName "中文.pdf"
      */
-    public static void setupResponse(HttpServletResponse response, String fileName) {
+    public static void setupDownLoadResponse(HttpServletResponse response, String fileName) {
         Logger logger = LoggerFactory.getLogger(FileUtils.class);
         //设置强制下载
         response.setContentType("application/force-download");

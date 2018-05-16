@@ -74,24 +74,13 @@ public class ExcelUtils {
     }
 
     /**
-     * 指定输出流参数
-     * @param xlsxSource xlsxSource
-     * @throws IOException IOException
-     */
-    private static void setHttpServletResponse(XlsxSource xlsxSource) throws IOException {
-        String agent = xlsxSource.request.getHeader("user-agent");
-        xlsxSource.fileName = FileUtils.encodeDownloadFilename(xlsxSource.fileName, agent);
-        xlsxSource.response.setHeader("Content-Disposition", "attachment;filename=" + xlsxSource.fileName);
-    }
-
-    /**
      * 导出xlsx
      * @param xlsxSource xlsxSource
      * @throws IOException IOException
      */
     public static void export(XlsxSource xlsxSource) throws IOException {
         XSSFWorkbook xssfWorkbook = getXssfSheets(xlsxSource);
-        setHttpServletResponse(xlsxSource);
+        ResponseUtils.setupDownLoadResponse(xlsxSource.response, xlsxSource.fileName);
         xlsxSource.response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         ServletOutputStream outputStream = xlsxSource.response.getOutputStream();
         xssfWorkbook.write(outputStream);

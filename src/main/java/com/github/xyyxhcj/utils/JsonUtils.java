@@ -15,7 +15,9 @@ import java.util.List;
  * @since 2018/2/6
  */
 public class JsonUtils {
-    //定义处理JSON数据的jackson对象
+    /**
+     * 定义处理JSON数据的jackson对象
+     */
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     /**

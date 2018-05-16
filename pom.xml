@@ -6,7 +6,7 @@
 
     <groupId>com.github.xyyxhcj</groupId>
     <artifactId>cj-utils</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <packaging>jar</packaging>
     <name>cj-utils</name>
     <url>https://github.com/xyyxhcj</url>
@@ -46,11 +46,6 @@
             <artifactId>fastdfs_client</artifactId>
             <version>1.25</version>
         </dependency>
-<!--        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-
-        </dependency>-->
         <!-- Jackson Json处理工具包 -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -83,6 +78,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>4.3.8.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.8</version>
         </dependency>
     </dependencies>
     <profiles>
