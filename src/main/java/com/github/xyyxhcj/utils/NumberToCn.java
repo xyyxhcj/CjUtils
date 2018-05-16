@@ -53,8 +53,7 @@ public class NumberToCn {
             return CN_ZERO_FULL;
         }
         // 这里会进行金额的四舍五入
-        long number = numberOfMoney.movePointRight(MONEY_PRECISION)
-                .setScale(0, 4).abs().longValue();
+        long number = numberOfMoney.movePointRight(MONEY_PRECISION).setScale(0, 4).abs().longValue();
         // 得到小数点后两位值
         long scale = number % 100;
         int numUnit = 0;
