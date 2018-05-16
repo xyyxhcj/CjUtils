@@ -26,13 +26,18 @@ public class FastStringUtils {
         while ((index = src.indexOf(replacement)) != -1) {
             String str = src.substring(0, index);
             if (str.length() != 0) {
-                list.add((T) str.trim());
+                list.add(cast(str.trim()));
             }
             src = src.substring(index+length);
         }
         if (src.length() != 0) {
-            list.add((T)src.trim());
+            list.add(cast(src.trim()));
         }
         return list;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T cast(Object object) {
+        return (T) object;
     }
 }

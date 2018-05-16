@@ -28,12 +28,12 @@ public final class CookieUtils {
         }
         String value = null;
         try {
-            for (int i = 0; i < cookies.length; i++) {
-                if (cookies[i].getName().equals(cookieName)) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(cookieName)) {
                     if (isDecoder) {
-                        value = URLDecoder.decode(cookies[i].getValue(), "UTF-8");
+                        value = URLDecoder.decode(cookie.getValue(), "UTF-8");
                     } else {
-                        value = cookies[i].getValue();
+                        value = cookie.getValue();
                     }
                     break;
                 }
@@ -68,9 +68,9 @@ public final class CookieUtils {
         }
         String value=null;
         try {
-            for (int i = 0; i < cookies.length; i++) {
-                if (cookies[i].getName().equals(cookieName)) {
-                    value = URLDecoder.decode(cookies[i].getValue(), encodeString);
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(cookieName)) {
+                    value = URLDecoder.decode(cookie.getValue(), encodeString);
                     break;
                 }
             }
@@ -85,7 +85,7 @@ public final class CookieUtils {
      * @param request request
      * @return return
      */
-    private static final String getDomainName(HttpServletRequest request) {
+    private static String getDomainName(HttpServletRequest request) {
         String domainName;
         String serverName = request.getRequestURL().toString();
         if ("".equals(serverName.trim())) {
@@ -99,7 +99,7 @@ public final class CookieUtils {
             if (len > 3) {
                 //www.xxx.com.cn
                 domainName = "." + domains[len - 3] + "." + domains[len - 2] + "." + domains[len - 1];
-            } else if (len <= 3 && len > 1) {
+            } else if (len > 1) {
                 //xxx.com or xxx.cn
                 domainName = "." + domains[len - 2] + "." + domains[len - 1];
             } else {
@@ -108,7 +108,7 @@ public final class CookieUtils {
         }
         //过滤端口号
         if (domainName.indexOf(":") > 0) {
-            domainName=domainName.split("\\:")[0];
+            domainName = domainName.split(":")[0];
         }
         return domainName;
     }
@@ -133,7 +133,7 @@ public final class CookieUtils {
      * @param request 用于设置域名的cookie(为null时表示不设置域名cookie)
      * @param cookieMaxAge cookie有效期(秒)
      */
-    private static final void doSetCookie(HttpServletRequest request, HttpServletResponse response, String cookieName, String cookieValue, int cookieMaxAge, boolean isEncode) {
+    private static void doSetCookie(HttpServletRequest request, HttpServletResponse response, String cookieName, String cookieValue, int cookieMaxAge, boolean isEncode) {
         try {
             if (cookieValue == null) {
                 cookieValue = "";
