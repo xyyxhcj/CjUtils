@@ -47,9 +47,9 @@ public class NumberToCn {
         StringBuffer sb = new StringBuffer();
         // -1, 0, or 1 as the value of this BigDecimal is negative, zero, or
         // positive.
-        int signum = numberOfMoney.signum();
+        int sigNum = numberOfMoney.signum();
         // 零元整的情况
-        if (signum == 0) {
+        if (sigNum == 0) {
             return CN_ZERO_FULL;
         }
         // 这里会进行金额的四舍五入
@@ -72,10 +72,7 @@ public class NumberToCn {
             getZero = true;
         }
         int zeroSize = 0;
-        while (true) {
-            if (number <= 0) {
-                break;
-            }
+        while (number > 0) {
             // 每次获取到最后一个数
             numUnit = (int) (number % 10);
             if (numUnit > 0) {
@@ -105,8 +102,8 @@ public class NumberToCn {
             number = number / 10;
             ++numIndex;
         }
-        // 如果signum == -1，则说明输入的数字为负数，就在最前面追加特殊字符：负
-        if (signum == -1) {
+        // 如果sigNum == -1，则说明输入的数字为负数，就在最前面追加特殊字符：负
+        if (sigNum == -1) {
             sb.insert(0, CN_NEGATIVE);
         }
         // 输入的数字小数点后两位为"00"的情况，则要在最后追加特殊字符：整
