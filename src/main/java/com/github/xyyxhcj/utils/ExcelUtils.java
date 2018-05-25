@@ -5,10 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -39,61 +36,57 @@ public class ExcelUtils {
     private static final DozerBeanMapper DOZER_BEAN_MAPPER = new DozerBeanMapper();
 
     /**
-     * 生成.xlsx文件数据
+     * 生成Excel文件数据
      *
      * @param xlsxSource xlsxSource
-     * @return return
+     * @param workbook XSSFWorkbook->xlsx;HSSFWorkbook->xls
      */
-    private static XSSFWorkbook getXssfSheets(XlsxSource xlsxSource) {
-        Map map = new HashMap(xlsxSource.keys.length);
-        XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
-        XSSFSheet sheet = xssfWorkbook.createSheet(xlsxSource.sheetName);
-        XSSFRow rowKey = sheet.createRow(0);
-        XSSFRow rowKeyCn = sheet.createRow(1);
+    private static void setSheets(XlsxSource xlsxSource, Workbook workbook) {
+        Sheet sheet = workbook.createSheet(xlsxSource.sheetName);
+        Row rowKey = sheet.createRow(0);
+        Row rowKeyCn = sheet.createRow(1);
         rowKey.setZeroHeight(true);
+        //创建首行的单元格样式
+        CellStyle cellStyle = initCellStyle(workbook);
+        //设置背景色
+        cellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
         for (int i = 0; i < xlsxSource.keys.length; i++) {
             rowKey.createCell(i).setCellValue(xlsxSource.keys[i]);
-            rowKeyCn.createCell(i).setCellValue(xlsxSource.keysCn[i]);
+            Cell rowKeyCnCell = rowKeyCn.createCell(i);
+            rowKeyCnCell.setCellValue(xlsxSource.keysCn[i]);
+            //设置首行的单元格样式
+            rowKeyCnCell.setCellStyle(cellStyle);
         }
-        for (Object obj : xlsxSource.sources) {
-            XSSFRow dataRow = sheet.createRow(sheet.getLastRowNum() + 1);
-            if (obj instanceof Map) {
-                map = (Map) obj;
+        //创建数据单元格样式
+        cellStyle = initCellStyle(workbook);
+        //设置背景色
+        cellStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+        List<Map<String, Object>> sources = xlsxSource.sources;
+        for (int i = 0; i < sources.size(); i++) {
+            Map<String, Object> map = sources.get(i);
+            Row dataRow = sheet.createRow(sheet.getLastRowNum() + 1);
+            if (i % 2 == 1) {
+                setData(xlsxSource, map, dataRow, cellStyle);
             } else {
-                DOZER_BEAN_MAPPER.map(obj, map);
+                setData(xlsxSource, map, dataRow, null);
             }
-            setData(xlsxSource, map, dataRow);
         }
-        return xssfWorkbook;
     }
 
     /**
-     * 生成.xls文件数据
-     *
-     * @param xlsxSource xlsxSource
-     * @return return
+     * 初始化单元格样式
+     * @param workbook workbook
      */
-    private static HSSFWorkbook getHssfSheets(XlsxSource xlsxSource) {
-        Map map = new HashMap(xlsxSource.keys.length);
-        HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
-        HSSFSheet sheet = hssfWorkbook.createSheet(xlsxSource.sheetName);
-        HSSFRow rowKey = sheet.createRow(0);
-        HSSFRow rowKeyCn = sheet.createRow(1);
-        rowKey.setZeroHeight(true);
-        for (int i = 0; i < xlsxSource.keys.length; i++) {
-            rowKey.createCell(i).setCellValue(xlsxSource.keys[i]);
-            rowKeyCn.createCell(i).setCellValue(xlsxSource.keysCn[i]);
-        }
-        for (Object obj : xlsxSource.sources) {
-            HSSFRow dataRow = sheet.createRow(sheet.getLastRowNum() + 1);
-            if (obj instanceof Map) {
-                map = (Map) obj;
-            } else {
-                DOZER_BEAN_MAPPER.map(obj, map);
-            }
-            setData(xlsxSource, map, dataRow);
-        }
-        return hssfWorkbook;
+    private static CellStyle initCellStyle(Workbook workbook) {
+        CellStyle cellStyle = workbook.createCellStyle();
+        //设置单元格填充样式,SOLID_FOREGROUND:使用前景颜色纯色填充
+        cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        //设置边框
+        cellStyle.setBorderBottom(BorderStyle.THIN);
+        cellStyle.setBorderLeft(BorderStyle.THIN);
+        cellStyle.setBorderTop(BorderStyle.THIN);
+        cellStyle.setBorderRight(BorderStyle.THIN);
+        return cellStyle;
     }
 
     /**
@@ -103,40 +96,33 @@ public class ExcelUtils {
      * @param map        map
      * @param dataRow    dataRow
      */
-    private static void setData(XlsxSource xlsxSource, Map map, Row dataRow) {
+    private static void setData(XlsxSource xlsxSource, Map map, Row dataRow, CellStyle cellStyle) {
         for (int i = 0; i < xlsxSource.keys.length; i++) {
             Object value = map.get(xlsxSource.keys[i]);
+            Cell cell = dataRow.createCell(i);
             if (value instanceof String) {
-                dataRow.createCell(i).setCellValue((String) value);
+                cell.setCellValue((String) value);
             } else {
-                dataRow.createCell(i).setCellValue(value + "");
+                cell.setCellValue(value + "");
+            }
+            //上色
+            if (cellStyle != null) {
+                cell.setCellStyle(cellStyle);
             }
         }
     }
 
     /**
-     * 导出xlsx
+     * 导出Excel
      *
      * @param xlsxSource xlsxSource
+     * @param workbook XSSFWorkbook->xlsx; HSSFWorkbook->xls
      * @throws IOException IOException
      */
-    public static void export(XlsxSource xlsxSource) throws IOException {
-        XSSFWorkbook xssfWorkbook = getXssfSheets(xlsxSource);
+    public static void export(XlsxSource xlsxSource, Workbook workbook) throws IOException {
+        setSheets(xlsxSource, workbook);
         ServletOutputStream outputStream = getServletOutputStream(xlsxSource);
-        xssfWorkbook.write(outputStream);
-        outputStream.close();
-    }
-
-    /**
-     * 导出xls
-     *
-     * @param xlsxSource xlsxSource
-     * @throws IOException IOException
-     */
-    public static void exportXls(XlsxSource xlsxSource) throws IOException {
-        HSSFWorkbook hssfWorkbook = getHssfSheets(xlsxSource);
-        ServletOutputStream outputStream = getServletOutputStream(xlsxSource);
-        hssfWorkbook.write(outputStream);
+        workbook.write(outputStream);
         outputStream.close();
     }
 
@@ -214,40 +200,10 @@ public class ExcelUtils {
                 }
             }
             if (!map.isEmpty()) {
-
                 list.add(map);
             }
         }
         return list;
-    }
-
-    /**
-     * 测试
-     *
-     * @param args args
-     */
-    public static void main(String[] args) {
-        //模拟数据
-        List<Map<String, Object>> sources = new ArrayList<>(2);
-        for (int i = 0; i < 2; i++) {
-            Map<String, Object> source = new HashMap<>();
-            source.put("id", "C-00" + (i + 1));
-            source.put("price", 199.9 + i);
-            source.put("pcs", 150 + i);
-            sources.add(source);
-        }
-        String[] keys = "id,price,pcs".split(",");
-        String[] keysCn = "商品编码,价格,数量".split(",");
-        XlsxSource xlsxSource = new XlsxSource(sources, keys, keysCn, null, "测试导出.xls", "TestSheet");
-        HSSFWorkbook hssfWorkbook = getHssfSheets(xlsxSource);
-        //实际开发中只需调用export()或exportXls()
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream("D:\\temp\\1.xls");
-            hssfWorkbook.write(fileOutputStream);
-            fileOutputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -278,6 +234,36 @@ public class ExcelUtils {
             this.response = response;
             this.fileName = fileName;
             this.sheetName = sheetName;
+        }
+    }
+
+    /**
+     * 测试
+     *
+     * @param args args
+     */
+    public static void main(String[] args) {
+        //模拟数据
+        List<Map<String, Object>> sources = new ArrayList<>(2);
+        for (int i = 0; i < 2; i++) {
+            Map<String, Object> source = new HashMap<>();
+            source.put("id", "C-00" + (i + 1));
+            source.put("price", 199.9 + i);
+            source.put("pcs", 150 + i);
+            sources.add(source);
+        }
+        String[] keys = "id,price,pcs".split(",");
+        String[] keysCn = "商品编码,价格,数量".split(",");
+        XlsxSource xlsxSource = new XlsxSource(sources, keys, keysCn, null, "测试导出.xls", "TestSheet");
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        setSheets(xlsxSource, workbook);
+        //实际开发中只需调用export()
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream("D:\\temp\\1.xls");
+            workbook.write(fileOutputStream);
+            fileOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
