@@ -60,6 +60,7 @@ public class MailUtils {
 
     /**
      * 测试
+     * @param args args
      */
     public static void main(String[] args) {
         sendMail("异常记录", "异常记录:<br/>", "xyyxhcj@qq.com");

@@ -18,6 +18,7 @@ public class UcpaasUtils {
 
     /**
      * 测试
+     * @param args args
      */
     public static void main(String[] args) {
         //String result = sendSms("18817237197", "6789","263192");

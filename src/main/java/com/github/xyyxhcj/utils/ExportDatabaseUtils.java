@@ -55,6 +55,7 @@ public class ExportDatabaseUtils {
 
     /**
      * 测试:使用配置文件中的对应配置备份数据库
+     * @param args args
      */
     public static void main(String[] args) {
         boolean flag = exportDatabaseTool("127.0.0.1", 3306, "root", "as123456", "D:/backupDatabase", "sqlBack.sql", "test");

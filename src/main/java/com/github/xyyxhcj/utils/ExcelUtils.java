@@ -41,7 +41,7 @@ public class ExcelUtils {
      * 生成Excel文件数据
      *
      * @param xlsxSource xlsxSource
-     * @param workbook   XSSFWorkbook->xlsx;HSSFWorkbook->xls
+     * @param workbook   XSSFWorkbook to xlsx;HSSFWorkbook to xls
      */
     private static void setSheets(XlsxSource xlsxSource, Workbook workbook) {
         Sheet sheet = workbook.createSheet(xlsxSource.sheetName);
@@ -156,7 +156,7 @@ public class ExcelUtils {
      * 导出Excel
      *
      * @param xlsxSource xlsxSource
-     * @param workbook   XSSFWorkbook->xlsx; HSSFWorkbook->xls
+     * @param workbook   XSSFWorkbook to xlsx; HSSFWorkbook to xls
      * @throws IOException IOException
      */
     public static void export(XlsxSource xlsxSource, Workbook workbook) throws IOException {
@@ -260,7 +260,9 @@ public class ExcelUtils {
     }
 
     /**
-     *
+     * 将数据装入模板
+     * @param fileName classes目录下文件名(相对路径)
+     * @return Workbook
      */
     public static Workbook getExcelFromTemplate(String fileName) {
         Class<ExcelUtils> clazz = ExcelUtils.class;
