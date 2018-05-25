@@ -41,7 +41,7 @@ public class ExcelUtils {
      * 生成Excel文件数据
      *
      * @param xlsxSource xlsxSource
-     * @param workbook XSSFWorkbook->xlsx;HSSFWorkbook->xls
+     * @param workbook   XSSFWorkbook->xlsx;HSSFWorkbook->xls
      */
     private static void setSheets(XlsxSource xlsxSource, Workbook workbook) {
         Sheet sheet = workbook.createSheet(xlsxSource.sheetName);
@@ -57,7 +57,7 @@ public class ExcelUtils {
         for (int i = 0; i < xlsxSource.keys.length; i++) {
             rowKey.createCell(i).setCellValue(xlsxSource.keys[i]);
             Cell rowKeyCnCell = rowKeyCn.createCell(i);
-            if (i < xlsxSource.keysCn.length) {
+            if (xlsxSource.keysCn != null && i < xlsxSource.keysCn.length) {
                 rowKeyCnCell.setCellValue(xlsxSource.keysCn[i]);
             }
             //设置首行的单元格样式
@@ -116,6 +116,7 @@ public class ExcelUtils {
 
     /**
      * 初始化单元格样式
+     *
      * @param workbook workbook
      */
     private static CellStyle initCellStyle(Workbook workbook) {
@@ -155,7 +156,7 @@ public class ExcelUtils {
      * 导出Excel
      *
      * @param xlsxSource xlsxSource
-     * @param workbook XSSFWorkbook->xlsx; HSSFWorkbook->xls
+     * @param workbook   XSSFWorkbook->xlsx; HSSFWorkbook->xls
      * @throws IOException IOException
      */
     public static void export(XlsxSource xlsxSource, Workbook workbook) throws IOException {
