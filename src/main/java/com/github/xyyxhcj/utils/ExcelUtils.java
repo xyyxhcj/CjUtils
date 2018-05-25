@@ -10,6 +10,8 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.dozer.DozerBeanMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
@@ -46,6 +48,8 @@ public class ExcelUtils {
         Row rowKey = sheet.createRow(0);
         Row rowKeyCn = sheet.createRow(1);
         rowKey.setZeroHeight(true);
+        //POI中的行高＝Excel的行高度*20
+        rowKeyCn.setHeight((short) 400);
         //创建首行的单元格样式
         CellStyle cellStyle = initCellStyle(workbook);
         //设置背景色
@@ -53,22 +57,59 @@ public class ExcelUtils {
         for (int i = 0; i < xlsxSource.keys.length; i++) {
             rowKey.createCell(i).setCellValue(xlsxSource.keys[i]);
             Cell rowKeyCnCell = rowKeyCn.createCell(i);
-            rowKeyCnCell.setCellValue(xlsxSource.keysCn[i]);
+            if (i < xlsxSource.keysCn.length) {
+                rowKeyCnCell.setCellValue(xlsxSource.keysCn[i]);
+            }
             //设置首行的单元格样式
             rowKeyCnCell.setCellStyle(cellStyle);
         }
-        //创建数据单元格样式
+        fillData(xlsxSource, workbook, sheet);
+
+    }
+
+    public static void fillData(XlsxSource xlsxSource, Workbook workbook, Sheet sheet) {
+        CellStyle cellStyle;//创建奇数行数据单元格样式
         cellStyle = initCellStyle(workbook);
         //设置背景色
         cellStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+        //创建偶数行单元格样式
+        CellStyle evenCellStyle = initCellStyle(workbook);
+        evenCellStyle.setFillPattern(FillPatternType.NO_FILL);
         List<Map<String, Object>> sources = xlsxSource.sources;
+        int begin = sheet.getLastRowNum();
         for (int i = 0; i < sources.size(); i++) {
             Map<String, Object> map = sources.get(i);
-            Row dataRow = sheet.createRow(sheet.getLastRowNum() + 1);
+            int lastRowNum = sheet.getLastRowNum();
+            if (lastRowNum % 65534 == 0 && lastRowNum != 0) {
+                Sheet nextSheet = workbook.createSheet();
+                for (int j = 0; j <= begin; j++) {
+                    Row row = sheet.getRow(j);
+                    Row nextSheetRow = nextSheet.createRow(j);
+                    for (int k = 0; k < row.getLastCellNum(); k++) {
+                        Cell nextSheetRowCell = nextSheetRow.createCell(k);
+                        Cell cell = row.getCell(k);
+                        nextSheetRowCell.setCellValue(cell.getStringCellValue());
+                        nextSheetRowCell.setCellStyle(cell.getCellStyle());
+                        if (j == 0) {
+                            int columnWidth = sheet.getColumnWidth(k);
+                            if (columnWidth != 2048) {
+                                nextSheet.setColumnWidth(k, columnWidth);
+                            }
+                        }
+                    }
+                    nextSheetRow.setHeight(row.getHeight());
+                }
+                sheet = nextSheet;
+                lastRowNum = sheet.getLastRowNum();
+            }
+            Row dataRow = sheet.createRow(lastRowNum + 1);
+            //POI中的行高＝Excel的行高度*20
+            //Excel的行高度=POI中的行高/20
+            dataRow.setHeight((short) 400);
             if (i % 2 == 1) {
                 setData(xlsxSource, map, dataRow, cellStyle);
             } else {
-                setData(xlsxSource, map, dataRow, null);
+                setData(xlsxSource, map, dataRow, evenCellStyle);
             }
         }
     }
@@ -106,9 +147,7 @@ public class ExcelUtils {
                 cell.setCellValue(value + "");
             }
             //上色
-            if (cellStyle != null) {
-                cell.setCellStyle(cellStyle);
-            }
+            cell.setCellStyle(cellStyle);
         }
     }
 
@@ -123,7 +162,20 @@ public class ExcelUtils {
         setSheets(xlsxSource, workbook);
         ServletOutputStream outputStream = getServletOutputStream(xlsxSource);
         workbook.write(outputStream);
-        outputStream.close();
+    }
+
+    /**
+     * 将数据装入模板Excel再导出
+     *
+     * @param xlsxSource xlsxSource
+     * @param fileName   classes下的文件名(相对路径)
+     * @throws IOException IOException
+     */
+    public static void export(XlsxSource xlsxSource, String fileName) throws IOException {
+        Workbook workbook = ExcelUtils.getExcelFromTemplate(fileName);
+        fillData(xlsxSource, workbook, workbook.getSheetAt(0));
+        ServletOutputStream outputStream = getServletOutputStream(xlsxSource);
+        workbook.write(outputStream);
     }
 
     /**
@@ -204,6 +256,26 @@ public class ExcelUtils {
             }
         }
         return list;
+    }
+
+    /**
+     *
+     */
+    public static Workbook getExcelFromTemplate(String fileName) {
+        Class<ExcelUtils> clazz = ExcelUtils.class;
+        Logger logger = LoggerFactory.getLogger(clazz);
+        InputStream resourceAsStream = clazz.getClassLoader().getResourceAsStream(fileName);
+        Workbook workbook = null;
+        try {
+            if (fileName.endsWith(".xls")) {
+                workbook = new HSSFWorkbook(resourceAsStream);
+            } else if (fileName.endsWith(".xlsx")) {
+                workbook = new XSSFWorkbook(resourceAsStream);
+            }
+        } catch (IOException e) {
+            logger.info("获取class下的excel文件失败：{}", e);
+        }
+        return workbook;
     }
 
     /**
