@@ -67,18 +67,26 @@ public class ExcelUtils {
 
     }
 
-    public static void fillData(XlsxSource xlsxSource, Workbook workbook, Sheet sheet) {
-        CellStyle cellStyle;//创建奇数行数据单元格样式
+    private static void fillData(XlsxSource xlsxSource, Workbook workbook, Sheet sheet) {
+        CellStyle cellStyle;
+        //创建奇数行数据单元格样式
         cellStyle = initCellStyle(workbook);
         //设置背景色
         cellStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
         //创建偶数行单元格样式
         CellStyle evenCellStyle = initCellStyle(workbook);
         evenCellStyle.setFillPattern(FillPatternType.NO_FILL);
-        List<Map<String, Object>> sources = xlsxSource.sources;
+        List sources = xlsxSource.sources;
         int begin = sheet.getLastRowNum();
+        DozerBeanMapper dozerBeanMapper = new DozerBeanMapper();
         for (int i = 0; i < sources.size(); i++) {
-            Map<String, Object> map = sources.get(i);
+            Map map = null;
+            if (sources.get(i) instanceof Map) {
+                map = (Map) sources.get(i);
+            } else {
+                map = new HashMap<>();
+                dozerBeanMapper.map(sources.get(i), map);
+            }
             int lastRowNum = sheet.getLastRowNum();
             if (lastRowNum % 65534 == 0 && lastRowNum != 0) {
                 Sheet nextSheet = workbook.createSheet();
@@ -286,7 +294,7 @@ public class ExcelUtils {
      */
     public static class XlsxSource {
         private String sheetName;
-        private List<Map<String, Object>> sources;
+        private List<?> sources;
         private String[] keys;
         private String[] keysCn;
         private HttpServletResponse response;
@@ -302,7 +310,7 @@ public class ExcelUtils {
          * @param fileName  输出文件名(包含后缀)
          * @param sheetName Excel工作表名
          */
-        public XlsxSource(List<Map<String, Object>> sources, String[] keys, String[] keysCn, HttpServletResponse response, String fileName, String sheetName) {
+        public XlsxSource(List<?> sources, String[] keys, String[] keysCn, HttpServletResponse response, String fileName, String sheetName) {
             this.sources = sources;
             this.keys = keys;
             this.keysCn = keysCn;
