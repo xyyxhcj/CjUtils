@@ -181,7 +181,7 @@ public class ExcelUtils {
      * @throws IOException IOException
      */
     public static void export(XlsxSource xlsxSource, String fileName) throws IOException {
-        Workbook workbook = ExcelUtils.getExcelFromTemplate(fileName);
+        Workbook workbook = getExcelFromTemplate(fileName);
         fillData(xlsxSource, workbook, workbook.getSheetAt(0));
         ServletOutputStream outputStream = getServletOutputStream(xlsxSource);
         workbook.write(outputStream);
